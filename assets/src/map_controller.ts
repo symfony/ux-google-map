@@ -8,7 +8,7 @@
  */
 
 import AbstractMapController from '@symfony/ux-map';
-import type { Point, MarkerDefinition, PolygonDefinition } from '@symfony/ux-map';
+import type { Point, MarkerDefinition, PolygonDefinition, PolylineDefinition } from '@symfony/ux-map';
 import type { LoaderOptions } from '@googlemaps/js-api-loader';
 import { Loader } from '@googlemaps/js-api-loader';
 
@@ -38,7 +38,9 @@ export default class extends AbstractMapController<
     google.maps.InfoWindowOptions,
     google.maps.InfoWindow,
     google.maps.PolygonOptions,
-    google.maps.Polygon
+    google.maps.Polygon,
+    google.maps.PolylineOptions,
+    google.maps.Polyline
 > {
     declare providerOptionsValue: Pick<
         LoaderOptions,
@@ -153,6 +155,36 @@ export default class extends AbstractMapController<
         return polygon;
     }
 
+    protected removePolygon(polygon: google.maps.Polygon) {
+        polygon.setMap(null);
+    }
+
+    protected doCreatePolyline(
+        definition: PolylineDefinition<google.maps.Polyline, google.maps.InfoWindowOptions>
+    ): google.maps.Polyline {
+        const { '@id': _id, points, title, infoWindow, rawOptions = {} } = definition;
+
+        const polyline = new _google.maps.Polyline({
+            ...rawOptions,
+            path: points,
+            map: this.map,
+        });
+
+        if (title) {
+            polyline.set('title', title);
+        }
+
+        if (infoWindow) {
+            this.createInfoWindow({ definition: infoWindow, element: polyline });
+        }
+
+        return polyline;
+    }
+
+    protected removePolyline(polyline: google.maps.Polyline): void {
+        polyline.setMap(null);
+    }
+
     protected doCreateInfoWindow({
         definition,
         element,
@@ -167,6 +199,10 @@ export default class extends AbstractMapController<
         | {
               definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>['infoWindow'];
               element: google.maps.Polygon;
+          }
+        | {
+              definition: PolylineDefinition<google.maps.Polyline, google.maps.InfoWindowOptions>['infoWindow'];
+              element: google.maps.Polyline;
           }): google.maps.InfoWindow {
         const { headerContent, content, extra, rawOptions = {}, ...otherOptions } = definition;
 

@@ -1,8 +1,8 @@
 import AbstractMapController from '@symfony/ux-map';
-import type { Point, MarkerDefinition, PolygonDefinition } from '@symfony/ux-map';
+import type { Point, MarkerDefinition, PolygonDefinition, PolylineDefinition } from '@symfony/ux-map';
 import type { LoaderOptions } from '@googlemaps/js-api-loader';
 type MapOptions = Pick<google.maps.MapOptions, 'mapId' | 'gestureHandling' | 'backgroundColor' | 'disableDoubleClickZoom' | 'zoomControl' | 'zoomControlOptions' | 'mapTypeControl' | 'mapTypeControlOptions' | 'streetViewControl' | 'streetViewControlOptions' | 'fullscreenControl' | 'fullscreenControlOptions'>;
-export default class extends AbstractMapController<MapOptions, google.maps.Map, google.maps.marker.AdvancedMarkerElementOptions, google.maps.marker.AdvancedMarkerElement, google.maps.InfoWindowOptions, google.maps.InfoWindow, google.maps.PolygonOptions, google.maps.Polygon> {
+export default class extends AbstractMapController<MapOptions, google.maps.Map, google.maps.marker.AdvancedMarkerElementOptions, google.maps.marker.AdvancedMarkerElement, google.maps.InfoWindowOptions, google.maps.InfoWindow, google.maps.PolygonOptions, google.maps.Polygon, google.maps.PolylineOptions, google.maps.Polyline> {
     providerOptionsValue: Pick<LoaderOptions, 'apiKey' | 'id' | 'language' | 'region' | 'nonce' | 'retries' | 'url' | 'version' | 'libraries'>;
     connect(): Promise<void>;
     protected dispatchEvent(name: string, payload?: Record<string, unknown>): void;
@@ -14,12 +14,18 @@ export default class extends AbstractMapController<MapOptions, google.maps.Map, 
     protected doCreateMarker(definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>): google.maps.marker.AdvancedMarkerElement;
     protected removeMarker(marker: google.maps.marker.AdvancedMarkerElement): void;
     protected doCreatePolygon(definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>): google.maps.Polygon;
+    protected removePolygon(polygon: google.maps.Polygon): void;
+    protected doCreatePolyline(definition: PolylineDefinition<google.maps.Polyline, google.maps.InfoWindowOptions>): google.maps.Polyline;
+    protected removePolyline(polyline: google.maps.Polyline): void;
     protected doCreateInfoWindow({ definition, element, }: {
         definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>['infoWindow'];
         element: google.maps.marker.AdvancedMarkerElement;
     } | {
         definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>['infoWindow'];
         element: google.maps.Polygon;
+    } | {
+        definition: PolylineDefinition<google.maps.Polyline, google.maps.InfoWindowOptions>['infoWindow'];
+        element: google.maps.Polyline;
     }): google.maps.InfoWindow;
     private createTextOrElement;
     private closeInfoWindowsExcept;

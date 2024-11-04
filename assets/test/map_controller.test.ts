@@ -46,6 +46,7 @@ describe('GoogleMapsController', () => {
               data-symfony--ux-google-map--map-options-value="{&quot;mapId&quot;:null,&quot;gestureHandling&quot;:&quot;auto&quot;,&quot;backgroundColor&quot;:null,&quot;disableDoubleClickZoom&quot;:false,&quot;zoomControlOptions&quot;:{&quot;position&quot;:22},&quot;mapTypeControlOptions&quot;:{&quot;mapTypeIds&quot;:[],&quot;position&quot;:14,&quot;style&quot;:0},&quot;streetViewControlOptions&quot;:{&quot;position&quot;:22},&quot;fullscreenControlOptions&quot;:{&quot;position&quot;:20},&quot;@provider&quot;:&quot;google&quot;}" 
               data-symfony--ux-google-map--map-markers-value="[]" 
               data-symfony--ux-google-map--map-polygons-value="[]" 
+              data-symfony--ux-google-map--map-polylines-value="[]" 
               style="height: 600px"
           ></div>
         `);
