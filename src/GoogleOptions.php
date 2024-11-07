@@ -46,6 +46,11 @@ final class GoogleOptions implements MapOptionsInterface
         return $this;
     }
 
+    public function hasMapId(): bool
+    {
+        return null !== $this->mapId;
+    }
+
     public function gestureHandling(GestureHandling $gestureHandling): self
     {
         $this->gestureHandling = $gestureHandling;

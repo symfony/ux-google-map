@@ -17,12 +17,20 @@ use Symfony\UX\Map\Renderer\AbstractRendererFactory;
 use Symfony\UX\Map\Renderer\Dsn;
 use Symfony\UX\Map\Renderer\RendererFactoryInterface;
 use Symfony\UX\Map\Renderer\RendererInterface;
+use Symfony\UX\StimulusBundle\Helper\StimulusHelper;
 
 /**
  * @author Hugo Alliaume <hugo@alliau.me>
  */
 final class GoogleRendererFactory extends AbstractRendererFactory implements RendererFactoryInterface
 {
+    public function __construct(
+        StimulusHelper $stimulus,
+        private ?string $defaultMapId = null,
+    ) {
+        parent::__construct($stimulus);
+    }
+
     public function create(Dsn $dsn): RendererInterface
     {
         if (!$this->supports($dsn)) {
@@ -42,6 +50,7 @@ final class GoogleRendererFactory extends AbstractRendererFactory implements Ren
             url: $dsn->getOption('url'),
             version: $dsn->getOption('version', 'weekly'),
             libraries: ['maps', 'marker', ...$dsn->getOption('libraries', [])],
+            defaultMapId: $this->defaultMapId,
         );
     }
 

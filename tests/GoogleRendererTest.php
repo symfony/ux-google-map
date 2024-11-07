@@ -78,5 +78,23 @@ class GoogleRendererTest extends RendererTestCase
                     fullscreenControl: false,
                 )),
         ];
+
+        yield 'with default map id' => [
+            'expected_renderer' => '<div data-controller="symfony--ux-google-map--map" data-symfony--ux-google-map--map-provider-options-value="{&quot;apiKey&quot;:&quot;my_api_key&quot;}" data-symfony--ux-google-map--map-view-value="{&quot;center&quot;:{&quot;lat&quot;:48.8566,&quot;lng&quot;:2.3522},&quot;zoom&quot;:12,&quot;fitBoundsToMarkers&quot;:false,&quot;options&quot;:{&quot;mapId&quot;:&quot;DefaultMapId&quot;,&quot;gestureHandling&quot;:&quot;auto&quot;,&quot;backgroundColor&quot;:null,&quot;disableDoubleClickZoom&quot;:false,&quot;zoomControlOptions&quot;:{&quot;position&quot;:22},&quot;mapTypeControlOptions&quot;:{&quot;mapTypeIds&quot;:[],&quot;position&quot;:14,&quot;style&quot;:0},&quot;streetViewControlOptions&quot;:{&quot;position&quot;:22},&quot;fullscreenControlOptions&quot;:{&quot;position&quot;:20}},&quot;markers&quot;:[],&quot;polygons&quot;:[]}"></div>',
+            'renderer' => new GoogleRenderer(new StimulusHelper(null), 'my_api_key', defaultMapId: 'DefaultMapId'),
+            'map' => (clone $map),
+        ];
+        yield 'with default map id, when passing options (except the "mapId")' => [
+            'expected_renderer' => '<div data-controller="symfony--ux-google-map--map" data-symfony--ux-google-map--map-provider-options-value="{&quot;apiKey&quot;:&quot;my_api_key&quot;}" data-symfony--ux-google-map--map-view-value="{&quot;center&quot;:{&quot;lat&quot;:48.8566,&quot;lng&quot;:2.3522},&quot;zoom&quot;:12,&quot;fitBoundsToMarkers&quot;:false,&quot;options&quot;:{&quot;mapId&quot;:&quot;DefaultMapId&quot;,&quot;gestureHandling&quot;:&quot;auto&quot;,&quot;backgroundColor&quot;:null,&quot;disableDoubleClickZoom&quot;:false,&quot;zoomControlOptions&quot;:{&quot;position&quot;:22},&quot;mapTypeControlOptions&quot;:{&quot;mapTypeIds&quot;:[],&quot;position&quot;:14,&quot;style&quot;:0},&quot;streetViewControlOptions&quot;:{&quot;position&quot;:22},&quot;fullscreenControlOptions&quot;:{&quot;position&quot;:20}},&quot;markers&quot;:[],&quot;polygons&quot;:[]}"></div>',
+            'renderer' => new GoogleRenderer(new StimulusHelper(null), 'my_api_key', defaultMapId: 'DefaultMapId'),
+            'map' => (clone $map)
+                ->options(new GoogleOptions()),
+        ];
+        yield 'with default map id overridden by option "mapId"' => [
+            'expected_renderer' => '<div data-controller="symfony--ux-google-map--map" data-symfony--ux-google-map--map-provider-options-value="{&quot;apiKey&quot;:&quot;my_api_key&quot;}" data-symfony--ux-google-map--map-view-value="{&quot;center&quot;:{&quot;lat&quot;:48.8566,&quot;lng&quot;:2.3522},&quot;zoom&quot;:12,&quot;fitBoundsToMarkers&quot;:false,&quot;options&quot;:{&quot;mapId&quot;:&quot;CustomMapId&quot;,&quot;gestureHandling&quot;:&quot;auto&quot;,&quot;backgroundColor&quot;:null,&quot;disableDoubleClickZoom&quot;:false,&quot;zoomControlOptions&quot;:{&quot;position&quot;:22},&quot;mapTypeControlOptions&quot;:{&quot;mapTypeIds&quot;:[],&quot;position&quot;:14,&quot;style&quot;:0},&quot;streetViewControlOptions&quot;:{&quot;position&quot;:22},&quot;fullscreenControlOptions&quot;:{&quot;position&quot;:20}},&quot;markers&quot;:[],&quot;polygons&quot;:[]}"></div>',
+            'renderer' => new GoogleRenderer(new StimulusHelper(null), 'my_api_key', defaultMapId: 'DefaultMapId'),
+            'map' => (clone $map)
+                ->options(new GoogleOptions(mapId: 'CustomMapId')),
+        ];
     }
 }

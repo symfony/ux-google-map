@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.22
+
+-   Add support for configuring a default Map ID
+-   Add argument `$defaultMapId` to `Symfony\UX\Map\Bridge\Google\Renderer\GoogleRendererFactory` constructor
+-   Add argument `$defaultMapId` to `Symfony\UX\Map\Bridge\Google\Renderer\GoogleRenderer` constructor
+
 ## 2.20
 
 ### BC Breaks

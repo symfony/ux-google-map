@@ -41,6 +41,7 @@ final readonly class GoogleRenderer extends AbstractRenderer
          * @var array<'core'|'maps'|'places'|'geocoding'|'routes'|'marker'|'geometry'|'elevation'|'streetView'|'journeySharing'|'drawing'|'visualization'>
          */
         private array $libraries = [],
+        private ?string $defaultMapId = null,
     ) {
         parent::__construct($stimulusHelper);
     }
@@ -66,7 +67,20 @@ final readonly class GoogleRenderer extends AbstractRenderer
 
     protected function getDefaultMapOptions(): MapOptionsInterface
     {
-        return new GoogleOptions();
+        return new GoogleOptions(mapId: $this->defaultMapId);
+    }
+
+    protected function tapOptions(MapOptionsInterface $options): MapOptionsInterface
+    {
+        if (!$options instanceof GoogleOptions) {
+            throw new \InvalidArgumentException(\sprintf('The options must be an instance of "%s", got "%s" instead.', GoogleOptions::class, get_debug_type($options)));
+        }
+
+        if (!$options->hasMapId()) {
+            $options->mapId($this->defaultMapId);
+        }
+
+        return $options;
     }
 
     public function __toString(): string
