@@ -116,7 +116,7 @@ export default class extends Controller
 
         // 1. To use a custom image for the marker 
         const beachFlagImg = document.createElement("img");
-        // Note: instead of using an hardcoded URL, you can use the `extra` parameter from `new Marker()` (PHP) and access it here with `definition.extra`.
+        // Note: instead of using a hardcoded URL, you can use the `extra` parameter from `new Marker()` (PHP) and access it here with `definition.extra`.
         beachFlagImg.src = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
         definition.rawOptions =  { 
             content: beachFlagImg
@@ -124,7 +124,7 @@ export default class extends Controller
       
         // 2. To use a custom glyph for the marker
         const pinElement = new google.maps.marker.PinElement({
-            // Note: instead of using an hardcoded URL, you can use the `extra` parameter from `new Marker()` (PHP) and access it here with `definition.extra`. 
+            // Note: instead of using a hardcoded URL, you can use the `extra` parameter from `new Marker()` (PHP) and access it here with `definition.extra`. 
             glyph: new URL('https://maps.gstatic.com/mapfiles/place_api/icons/v2/museum_pinlet.svg'), 
             glyphColor: "white",
         });
