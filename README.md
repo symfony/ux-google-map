@@ -46,9 +46,12 @@ $map = (new Map())
     ->center(new Point(48.8566, 2.3522))
     ->zoom(6);
 
-// To configure controls options, and some other options:
+// To configure control options and other map options:
 $googleOptions = (new GoogleOptions())
-    ->mapId('YOUR_MAP_ID')
+    // You can skip this option if you configure "ux_map.google_maps.default_map_id"
+    // in your "config/packages/ux_map.yaml".
+    ->mapId('YOUR_MAP_ID') 
+    
     ->gestureHandling(GestureHandling::GREEDY)
     ->backgroundColor('#f00')
     ->doubleClickZoom(true)
