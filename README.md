@@ -10,7 +10,7 @@ UX_MAP_DSN=google://GOOGLE_MAPS_API_KEY@default
 # With options
 UX_MAP_DSN=google://GOOGLE_MAPS_API_KEY@default?version=weekly
 UX_MAP_DSN=google://GOOGLE_MAPS_API_KEY@default?language=fr&region=FR
-UX_MAP_DSN=google://GOOGLE_MAPS_API_KEY@default??libraries[]=geometry&libraries[]=places
+UX_MAP_DSN=google://GOOGLE_MAPS_API_KEY@default?libraries[]=geometry&libraries[]=places
 ```
 
 Available options:
