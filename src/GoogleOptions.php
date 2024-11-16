@@ -132,6 +132,41 @@ final class GoogleOptions implements MapOptionsInterface
         return $this;
     }
 
+    /**
+     * @internal
+     */
+    public static function fromArray(array $array): self
+    {
+        $array += ['zoomControl' => false, 'mapTypeControl' => false, 'streetViewControl' => false, 'fullscreenControl' => false];
+
+        if (isset($array['zoomControlOptions'])) {
+            $array['zoomControl'] = true;
+            $array['zoomControlOptions'] = ZoomControlOptions::fromArray($array['zoomControlOptions']);
+        }
+
+        if (isset($array['mapTypeControlOptions'])) {
+            $array['mapTypeControl'] = true;
+            $array['mapTypeControlOptions'] = MapTypeControlOptions::fromArray($array['mapTypeControlOptions']);
+        }
+
+        if (isset($array['streetViewControlOptions'])) {
+            $array['streetViewControl'] = true;
+            $array['streetViewControlOptions'] = StreetViewControlOptions::fromArray($array['streetViewControlOptions']);
+        }
+
+        if (isset($array['fullscreenControlOptions'])) {
+            $array['fullscreenControl'] = true;
+            $array['fullscreenControlOptions'] = FullscreenControlOptions::fromArray($array['fullscreenControlOptions']);
+        }
+
+        $array['gestureHandling'] = GestureHandling::from($array['gestureHandling']);
+
+        return new self(...$array);
+    }
+
+    /**
+     * @internal
+     */
     public function toArray(): array
     {
         $array = [

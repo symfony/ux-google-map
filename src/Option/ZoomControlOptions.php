@@ -25,6 +25,19 @@ final readonly class ZoomControlOptions
     ) {
     }
 
+    /**
+     * @internal
+     */
+    public static function fromArray(array $array): self
+    {
+        return new self(
+            position: ControlPosition::from($array['position']),
+        );
+    }
+
+    /**
+     * @internal
+     */
     public function toArray(): array
     {
         return [

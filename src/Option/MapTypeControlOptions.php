@@ -30,6 +30,21 @@ final readonly class MapTypeControlOptions
     ) {
     }
 
+    /**
+     * @internal
+     */
+    public static function fromArray(array $array): self
+    {
+        return new self(
+            mapTypeIds: $array['mapTypeIds'],
+            position: ControlPosition::from($array['position']),
+            style: MapTypeControlStyle::from($array['style']),
+        );
+    }
+
+    /**
+     * @internal
+     */
     public function toArray(): array
     {
         return [

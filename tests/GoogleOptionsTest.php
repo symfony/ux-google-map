@@ -43,12 +43,14 @@ class GoogleOptionsTest extends TestCase
                 'position' => ControlPosition::INLINE_END_BLOCK_START->value,
             ],
         ], $options->toArray());
+
+        self::assertEquals($options, GoogleOptions::fromArray($options->toArray()));
     }
 
     public function testWithMinimalConfigurationAndWithoutControls(): void
     {
         $options = new GoogleOptions(
-            mapId: '2b2d73ba4b8c7b41',
+            mapId: 'abcdefgh12345678',
             gestureHandling: GestureHandling::GREEDY,
             backgroundColor: '#f00',
             disableDoubleClickZoom: true,
@@ -59,10 +61,12 @@ class GoogleOptionsTest extends TestCase
         );
 
         self::assertSame([
-            'mapId' => '2b2d73ba4b8c7b41',
+            'mapId' => 'abcdefgh12345678',
             'gestureHandling' => GestureHandling::GREEDY->value,
             'backgroundColor' => '#f00',
             'disableDoubleClickZoom' => true,
         ], $options->toArray());
+
+        self::assertEquals($options, GoogleOptions::fromArray($options->toArray()));
     }
 }
