@@ -28,7 +28,7 @@ class CheckController extends Controller {
 const startStimulus = () => {
     const application = Application.start();
     application.register('check', CheckController);
-    application.register('google', GoogleController);
+    application.register('symfony--ux-google-map--map', GoogleController);
 };
 
 describe('GoogleMapsController', () => {
@@ -38,10 +38,15 @@ describe('GoogleMapsController', () => {
         container = mountDOM(`
           <div 
               data-testid="map"
-              data-controller="check google" 
-              style="height&#x3A;&#x20;700px&#x3B;&#x20;margin&#x3A;&#x20;10px" 
-              data-google-provider-options-value="&#x7B;&quot;version&quot;&#x3A;&quot;weekly&quot;,&quot;libraries&quot;&#x3A;&#x5B;&quot;maps&quot;,&quot;marker&quot;&#x5D;,&quot;apiKey&quot;&#x3A;&quot;&quot;&#x7D;" 
-              data-google-view-value="&#x7B;&quot;center&quot;&#x3A;&#x7B;&quot;lat&quot;&#x3A;48.8566,&quot;lng&quot;&#x3A;2.3522&#x7D;,&quot;zoom&quot;&#x3A;4,&quot;fitBoundsToMarkers&quot;&#x3A;true,&quot;options&quot;&#x3A;&#x7B;&quot;mapId&quot;&#x3A;&quot;YOUR_MAP_ID&quot;,&quot;gestureHandling&quot;&#x3A;&quot;auto&quot;,&quot;backgroundColor&quot;&#x3A;null,&quot;disableDoubleClickZoom&quot;&#x3A;false,&quot;zoomControl&quot;&#x3A;true,&quot;zoomControlOptions&quot;&#x3A;&#x7B;&quot;position&quot;&#x3A;22&#x7D;,&quot;mapTypeControl&quot;&#x3A;true,&quot;mapTypeControlOptions&quot;&#x3A;&#x7B;&quot;mapTypeIds&quot;&#x3A;&#x5B;&#x5D;,&quot;position&quot;&#x3A;14,&quot;style&quot;&#x3A;0&#x7D;,&quot;streetViewControl&quot;&#x3A;true,&quot;streetViewControlOptions&quot;&#x3A;&#x7B;&quot;position&quot;&#x3A;22&#x7D;,&quot;fullscreenControl&quot;&#x3A;true,&quot;fullscreenControlOptions&quot;&#x3A;&#x7B;&quot;position&quot;&#x3A;20&#x7D;&#x7D;,&quot;markers&quot;&#x3A;&#x5B;&#x7B;&quot;position&quot;&#x3A;&#x7B;&quot;lat&quot;&#x3A;48.8566,&quot;lng&quot;&#x3A;2.3522&#x7D;,&quot;title&quot;&#x3A;&quot;Paris&quot;,&quot;infoWindow&quot;&#x3A;null&#x7D;,&#x7B;&quot;position&quot;&#x3A;&#x7B;&quot;lat&quot;&#x3A;45.764,&quot;lng&quot;&#x3A;4.8357&#x7D;,&quot;title&quot;&#x3A;&quot;Lyon&quot;,&quot;infoWindow&quot;&#x3A;&#x7B;&quot;headerContent&quot;&#x3A;&quot;&lt;b&gt;Lyon&lt;&#x5C;&#x2F;b&gt;&quot;,&quot;content&quot;&#x3A;&quot;The&#x20;French&#x20;town&#x20;in&#x20;the&#x20;historic&#x20;Rh&#x5C;u00f4ne-Alpes&#x20;region,&#x20;located&#x20;at&#x20;the&#x20;junction&#x20;of&#x20;the&#x20;Rh&#x5C;u00f4ne&#x20;and&#x20;Sa&#x5C;u00f4ne&#x20;rivers.&quot;,&quot;position&quot;&#x3A;null,&quot;opened&quot;&#x3A;false,&quot;autoClose&quot;&#x3A;true&#x7D;&#x7D;&#x5D;,&quot;polygons&quot;&#x3A;[]&#x7D;"
+              data-controller="check symfony--ux-google-map--map" 
+              data-symfony--ux-google-map--map-provider-options-value="{&quot;version&quot;:&quot;weekly&quot;,&quot;libraries&quot;:[&quot;maps&quot;,&quot;marker&quot;],&quot;apiKey&quot;:&quot;&quot;}" 
+              data-symfony--ux-google-map--map-center-value="{&quot;lat&quot;:48.8566,&quot;lng&quot;:2.3522}" 
+              data-symfony--ux-google-map--map-zoom-value="7" 
+              data-symfony--ux-google-map--map-fit-bounds-to-markers-value="false" 
+              data-symfony--ux-google-map--map-options-value="{&quot;mapId&quot;:null,&quot;gestureHandling&quot;:&quot;auto&quot;,&quot;backgroundColor&quot;:null,&quot;disableDoubleClickZoom&quot;:false,&quot;zoomControlOptions&quot;:{&quot;position&quot;:22},&quot;mapTypeControlOptions&quot;:{&quot;mapTypeIds&quot;:[],&quot;position&quot;:14,&quot;style&quot;:0},&quot;streetViewControlOptions&quot;:{&quot;position&quot;:22},&quot;fullscreenControlOptions&quot;:{&quot;position&quot;:20},&quot;@provider&quot;:&quot;google&quot;}" 
+              data-symfony--ux-google-map--map-markers-value="[]" 
+              data-symfony--ux-google-map--map-polygons-value="[]" 
+              style="height: 600px"
           ></div>
         `);
     });

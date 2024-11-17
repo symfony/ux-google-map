@@ -40,10 +40,6 @@ export default class extends AbstractMapController<
     google.maps.PolygonOptions,
     google.maps.Polygon
 > {
-    static values = {
-        providerOptions: Object,
-    };
-
     declare providerOptionsValue: Pick<
         LoaderOptions,
         'apiKey' | 'id' | 'language' | 'region' | 'nonce' | 'retries' | 'url' | 'version' | 'libraries'
@@ -114,7 +110,7 @@ export default class extends AbstractMapController<
     protected doCreateMarker(
         definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>
     ): google.maps.marker.AdvancedMarkerElement {
-        const { position, title, infoWindow, extra, rawOptions = {}, ...otherOptions } = definition;
+        const { '@id': _id, position, title, infoWindow, extra, rawOptions = {}, ...otherOptions } = definition;
 
         const marker = new _google.maps.marker.AdvancedMarkerElement({
             position,
@@ -131,10 +127,14 @@ export default class extends AbstractMapController<
         return marker;
     }
 
+    protected removeMarker(marker: google.maps.marker.AdvancedMarkerElement): void {
+        marker.map = null;
+    }
+
     protected doCreatePolygon(
         definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>
     ): google.maps.Polygon {
-        const { points, title, infoWindow, rawOptions = {} } = definition;
+        const { '@id': _id, points, title, infoWindow, rawOptions = {} } = definition;
 
         const polygon = new _google.maps.Polygon({
             ...rawOptions,
@@ -156,15 +156,18 @@ export default class extends AbstractMapController<
     protected doCreateInfoWindow({
         definition,
         element,
-    }: {
-        definition:
-            | MarkerDefinition<
+    }:
+        | {
+              definition: MarkerDefinition<
                   google.maps.marker.AdvancedMarkerElementOptions,
                   google.maps.InfoWindowOptions
-              >['infoWindow']
-            | PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>['infoWindow'];
-        element: google.maps.marker.AdvancedMarkerElement | google.maps.Polygon;
-    }): google.maps.InfoWindow {
+              >['infoWindow'];
+              element: google.maps.marker.AdvancedMarkerElement;
+          }
+        | {
+              definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>['infoWindow'];
+              element: google.maps.Polygon;
+          }): google.maps.InfoWindow {
         const { headerContent, content, extra, rawOptions = {}, ...otherOptions } = definition;
 
         const infoWindow = new _google.maps.InfoWindow({
@@ -245,5 +248,17 @@ export default class extends AbstractMapController<
         });
 
         this.map.fitBounds(bounds);
+    }
+
+    public centerValueChanged(): void {
+        if (this.map && this.centerValue) {
+            this.map.setCenter(this.centerValue);
+        }
+    }
+
+    public zoomValueChanged(): void {
+        if (this.map && this.zoomValue) {
+            this.map.setZoom(this.zoomValue);
+        }
     }
 }
