@@ -8,7 +8,13 @@
  */
 
 import AbstractMapController from '@symfony/ux-map';
-import type { Point, MarkerDefinition, PolygonDefinition, PolylineDefinition } from '@symfony/ux-map';
+import type {
+    Point,
+    MarkerDefinition,
+    PolygonDefinition,
+    PolylineDefinition,
+    InfoWindowWithoutPositionDefinition,
+} from '@symfony/ux-map';
 import type { LoaderOptions } from '@googlemaps/js-api-loader';
 import { Loader } from '@googlemaps/js-api-loader';
 
@@ -47,9 +53,11 @@ export default class extends AbstractMapController<
         'apiKey' | 'id' | 'language' | 'region' | 'nonce' | 'retries' | 'url' | 'version' | 'libraries'
     >;
 
+    declare map: google.maps.Map;
+
     async connect() {
         if (!_google) {
-            _google = { maps: {} };
+            _google = { maps: {} as typeof google.maps };
 
             let { libraries = [], ...loaderOptions } = this.providerOptionsValue;
 
@@ -75,6 +83,18 @@ export default class extends AbstractMapController<
         }
 
         super.connect();
+    }
+
+    public centerValueChanged(): void {
+        if (this.map && this.centerValue) {
+            this.map.setCenter(this.centerValue);
+        }
+    }
+
+    public zoomValueChanged(): void {
+        if (this.map && this.zoomValue) {
+            this.map.setZoom(this.zoomValue);
+        }
     }
 
     protected dispatchEvent(name: string, payload: Record<string, unknown> = {}): void {
@@ -129,12 +149,12 @@ export default class extends AbstractMapController<
         return marker;
     }
 
-    protected removeMarker(marker: google.maps.marker.AdvancedMarkerElement): void {
+    protected doRemoveMarker(marker: google.maps.marker.AdvancedMarkerElement): void {
         marker.map = null;
     }
 
     protected doCreatePolygon(
-        definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>
+        definition: PolygonDefinition<google.maps.PolygonOptions, google.maps.InfoWindowOptions>
     ): google.maps.Polygon {
         const { '@id': _id, points, title, infoWindow, rawOptions = {} } = definition;
 
@@ -155,12 +175,12 @@ export default class extends AbstractMapController<
         return polygon;
     }
 
-    protected removePolygon(polygon: google.maps.Polygon) {
+    protected doRemovePolygon(polygon: google.maps.Polygon) {
         polygon.setMap(null);
     }
 
     protected doCreatePolyline(
-        definition: PolylineDefinition<google.maps.Polyline, google.maps.InfoWindowOptions>
+        definition: PolylineDefinition<google.maps.PolylineOptions, google.maps.InfoWindowOptions>
     ): google.maps.Polyline {
         const { '@id': _id, points, title, infoWindow, rawOptions = {} } = definition;
 
@@ -181,29 +201,17 @@ export default class extends AbstractMapController<
         return polyline;
     }
 
-    protected removePolyline(polyline: google.maps.Polyline): void {
+    protected doRemovePolyline(polyline: google.maps.Polyline): void {
         polyline.setMap(null);
     }
 
     protected doCreateInfoWindow({
         definition,
         element,
-    }:
-        | {
-              definition: MarkerDefinition<
-                  google.maps.marker.AdvancedMarkerElementOptions,
-                  google.maps.InfoWindowOptions
-              >['infoWindow'];
-              element: google.maps.marker.AdvancedMarkerElement;
-          }
-        | {
-              definition: PolygonDefinition<google.maps.Polygon, google.maps.InfoWindowOptions>['infoWindow'];
-              element: google.maps.Polygon;
-          }
-        | {
-              definition: PolylineDefinition<google.maps.Polyline, google.maps.InfoWindowOptions>['infoWindow'];
-              element: google.maps.Polyline;
-          }): google.maps.InfoWindow {
+    }: {
+        definition: InfoWindowWithoutPositionDefinition<google.maps.InfoWindowOptions>;
+        element: google.maps.marker.AdvancedMarkerElement | google.maps.Polygon | google.maps.Polyline;
+    }): google.maps.InfoWindow {
         const { headerContent, content, extra, rawOptions = {}, ...otherOptions } = definition;
 
         const infoWindow = new _google.maps.InfoWindow({
@@ -246,6 +254,23 @@ export default class extends AbstractMapController<
         return infoWindow;
     }
 
+    protected doFitBoundsToMarkers(): void {
+        if (this.markers.size === 0) {
+            return;
+        }
+
+        const bounds = new google.maps.LatLngBounds();
+        this.markers.forEach((marker) => {
+            if (!marker.position) {
+                return;
+            }
+
+            bounds.extend(marker.position);
+        });
+
+        this.map.fitBounds(bounds);
+    }
+
     private createTextOrElement(content: string | null): string | HTMLElement | null {
         if (!content) {
             return null;
@@ -267,34 +292,5 @@ export default class extends AbstractMapController<
                 otherInfoWindow.close();
             }
         });
-    }
-
-    protected doFitBoundsToMarkers(): void {
-        if (this.markers.length === 0) {
-            return;
-        }
-
-        const bounds = new google.maps.LatLngBounds();
-        this.markers.forEach((marker) => {
-            if (!marker.position) {
-                return;
-            }
-
-            bounds.extend(marker.position);
-        });
-
-        this.map.fitBounds(bounds);
-    }
-
-    public centerValueChanged(): void {
-        if (this.map && this.centerValue) {
-            this.map.setCenter(this.centerValue);
-        }
-    }
-
-    public zoomValueChanged(): void {
-        if (this.map && this.zoomValue) {
-            this.map.setZoom(this.zoomValue);
-        }
     }
 }

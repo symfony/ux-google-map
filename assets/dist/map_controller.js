@@ -5,9 +5,10 @@ class default_1 extends Controller {
     constructor() {
         super(...arguments);
         this.markers = new Map();
-        this.infoWindows = [];
         this.polygons = new Map();
         this.polylines = new Map();
+        this.infoWindows = [];
+        this.isConnected = false;
     }
     connect() {
         const options = this.optionsValue;
@@ -26,12 +27,12 @@ class default_1 extends Controller {
             polylines: [...this.polylines.values()],
             infoWindows: this.infoWindows,
         });
+        this.isConnected = true;
     }
     createMarker(definition) {
         this.dispatchEvent('marker:before-create', { definition });
         const marker = this.doCreateMarker(definition);
         this.dispatchEvent('marker:after-create', { marker });
-        marker['@id'] = definition['@id'];
         this.markers.set(definition['@id'], marker);
         return marker;
     }
@@ -39,7 +40,6 @@ class default_1 extends Controller {
         this.dispatchEvent('polygon:before-create', { definition });
         const polygon = this.doCreatePolygon(definition);
         this.dispatchEvent('polygon:after-create', { polygon });
-        polygon['@id'] = definition['@id'];
         this.polygons.set(definition['@id'], polygon);
         return polygon;
     }
@@ -47,7 +47,6 @@ class default_1 extends Controller {
         this.dispatchEvent('polyline:before-create', { definition });
         const polyline = this.doCreatePolyline(definition);
         this.dispatchEvent('polyline:after-create', { polyline });
-        polyline['@id'] = definition['@id'];
         this.polylines.set(definition['@id'], polyline);
         return polyline;
     }
@@ -59,18 +58,21 @@ class default_1 extends Controller {
         return infoWindow;
     }
     markersValueChanged() {
-        if (!this.map) {
+        if (!this.isConnected) {
             return;
         }
-        this.markers.forEach((marker) => {
-            if (!this.markersValue.find((m) => m['@id'] === marker['@id'])) {
-                this.removeMarker(marker);
-                this.markers.delete(marker['@id']);
-            }
+        const idsToRemove = new Set(this.markers.keys());
+        this.markersValue.forEach((definition) => {
+            idsToRemove.delete(definition['@id']);
         });
-        this.markersValue.forEach((marker) => {
-            if (!this.markers.has(marker['@id'])) {
-                this.createMarker(marker);
+        idsToRemove.forEach((id) => {
+            const marker = this.markers.get(id);
+            this.doRemoveMarker(marker);
+            this.markers.delete(id);
+        });
+        this.markersValue.forEach((definition) => {
+            if (!this.markers.has(definition['@id'])) {
+                this.createMarker(definition);
             }
         });
         if (this.fitBoundsToMarkersValue) {
@@ -78,34 +80,40 @@ class default_1 extends Controller {
         }
     }
     polygonsValueChanged() {
-        if (!this.map) {
+        if (!this.isConnected) {
             return;
         }
-        this.polygons.forEach((polygon) => {
-            if (!this.polygonsValue.find((p) => p['@id'] === polygon['@id'])) {
-                this.removePolygon(polygon);
-                this.polygons.delete(polygon['@id']);
-            }
+        const idsToRemove = new Set(this.polygons.keys());
+        this.polygonsValue.forEach((definition) => {
+            idsToRemove.delete(definition['@id']);
         });
-        this.polygonsValue.forEach((polygon) => {
-            if (!this.polygons.has(polygon['@id'])) {
-                this.createPolygon(polygon);
+        idsToRemove.forEach((id) => {
+            const polygon = this.polygons.get(id);
+            this.doRemovePolygon(polygon);
+            this.polygons.delete(id);
+        });
+        this.polygonsValue.forEach((definition) => {
+            if (!this.polygons.has(definition['@id'])) {
+                this.createPolygon(definition);
             }
         });
     }
     polylinesValueChanged() {
-        if (!this.map) {
+        if (!this.isConnected) {
             return;
         }
-        this.polylines.forEach((polyline) => {
-            if (!this.polylinesValue.find((p) => p['@id'] === polyline['@id'])) {
-                this.removePolyline(polyline);
-                this.polylines.delete(polyline['@id']);
-            }
+        const idsToRemove = new Set(this.polylines.keys());
+        this.polylinesValue.forEach((definition) => {
+            idsToRemove.delete(definition['@id']);
         });
-        this.polylinesValue.forEach((polyline) => {
-            if (!this.polylines.has(polyline['@id'])) {
-                this.createPolyline(polyline);
+        idsToRemove.forEach((id) => {
+            const polyline = this.polylines.get(id);
+            this.doRemovePolyline(polyline);
+            this.polylines.delete(id);
+        });
+        this.polylinesValue.forEach((definition) => {
+            if (!this.polylines.has(definition['@id'])) {
+                this.createPolyline(definition);
             }
         });
     }
@@ -142,6 +150,16 @@ class map_controller extends default_1 {
         }
         super.connect();
     }
+    centerValueChanged() {
+        if (this.map && this.centerValue) {
+            this.map.setCenter(this.centerValue);
+        }
+    }
+    zoomValueChanged() {
+        if (this.map && this.zoomValue) {
+            this.map.setZoom(this.zoomValue);
+        }
+    }
     dispatchEvent(name, payload = {}) {
         this.dispatch(name, {
             prefix: 'ux:map',
@@ -176,7 +194,7 @@ class map_controller extends default_1 {
         }
         return marker;
     }
-    removeMarker(marker) {
+    doRemoveMarker(marker) {
         marker.map = null;
     }
     doCreatePolygon(definition) {
@@ -194,7 +212,7 @@ class map_controller extends default_1 {
         }
         return polygon;
     }
-    removePolygon(polygon) {
+    doRemovePolygon(polygon) {
         polygon.setMap(null);
     }
     doCreatePolyline(definition) {
@@ -212,7 +230,7 @@ class map_controller extends default_1 {
         }
         return polyline;
     }
-    removePolyline(polyline) {
+    doRemovePolyline(polyline) {
         polyline.setMap(null);
     }
     doCreateInfoWindow({ definition, element, }) {
@@ -253,6 +271,19 @@ class map_controller extends default_1 {
         }
         return infoWindow;
     }
+    doFitBoundsToMarkers() {
+        if (this.markers.size === 0) {
+            return;
+        }
+        const bounds = new google.maps.LatLngBounds();
+        this.markers.forEach((marker) => {
+            if (!marker.position) {
+                return;
+            }
+            bounds.extend(marker.position);
+        });
+        this.map.fitBounds(bounds);
+    }
     createTextOrElement(content) {
         if (!content) {
             return null;
@@ -270,29 +301,6 @@ class map_controller extends default_1 {
                 otherInfoWindow.close();
             }
         });
-    }
-    doFitBoundsToMarkers() {
-        if (this.markers.length === 0) {
-            return;
-        }
-        const bounds = new google.maps.LatLngBounds();
-        this.markers.forEach((marker) => {
-            if (!marker.position) {
-                return;
-            }
-            bounds.extend(marker.position);
-        });
-        this.map.fitBounds(bounds);
-    }
-    centerValueChanged() {
-        if (this.map && this.centerValue) {
-            this.map.setCenter(this.centerValue);
-        }
-    }
-    zoomValueChanged() {
-        if (this.map && this.zoomValue) {
-            this.map.setZoom(this.zoomValue);
-        }
     }
 }
 
