@@ -14,11 +14,17 @@ export default class extends AbstractMapController<MapOptions, google.maps.Map, 
         zoom: number | null;
         options: MapOptions;
     }): google.maps.Map;
-    protected doCreateMarker(definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>): google.maps.marker.AdvancedMarkerElement;
+    protected doCreateMarker({ definition, }: {
+        definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>;
+    }): google.maps.marker.AdvancedMarkerElement;
     protected doRemoveMarker(marker: google.maps.marker.AdvancedMarkerElement): void;
-    protected doCreatePolygon(definition: PolygonDefinition<google.maps.PolygonOptions, google.maps.InfoWindowOptions>): google.maps.Polygon;
+    protected doCreatePolygon({ definition, }: {
+        definition: PolygonDefinition<google.maps.PolygonOptions, google.maps.InfoWindowOptions>;
+    }): google.maps.Polygon;
     protected doRemovePolygon(polygon: google.maps.Polygon): void;
-    protected doCreatePolyline(definition: PolylineDefinition<google.maps.PolylineOptions, google.maps.InfoWindowOptions>): google.maps.Polyline;
+    protected doCreatePolyline({ definition, }: {
+        definition: PolylineDefinition<google.maps.PolylineOptions, google.maps.InfoWindowOptions>;
+    }): google.maps.Polyline;
     protected doRemovePolyline(polyline: google.maps.Polyline): void;
     protected doCreateInfoWindow({ definition, element, }: {
         definition: InfoWindowWithoutPositionDefinition<google.maps.InfoWindowOptions>;

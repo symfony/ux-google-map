@@ -129,9 +129,11 @@ export default class extends AbstractMapController<
         });
     }
 
-    protected doCreateMarker(
-        definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>
-    ): google.maps.marker.AdvancedMarkerElement {
+    protected doCreateMarker({
+        definition,
+    }: {
+        definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>;
+    }): google.maps.marker.AdvancedMarkerElement {
         const { '@id': _id, position, title, infoWindow, extra, rawOptions = {}, ...otherOptions } = definition;
 
         const marker = new _google.maps.marker.AdvancedMarkerElement({
@@ -153,9 +155,11 @@ export default class extends AbstractMapController<
         marker.map = null;
     }
 
-    protected doCreatePolygon(
-        definition: PolygonDefinition<google.maps.PolygonOptions, google.maps.InfoWindowOptions>
-    ): google.maps.Polygon {
+    protected doCreatePolygon({
+        definition,
+    }: {
+        definition: PolygonDefinition<google.maps.PolygonOptions, google.maps.InfoWindowOptions>;
+    }): google.maps.Polygon {
         const { '@id': _id, points, title, infoWindow, rawOptions = {} } = definition;
 
         const polygon = new _google.maps.Polygon({
@@ -179,9 +183,11 @@ export default class extends AbstractMapController<
         polygon.setMap(null);
     }
 
-    protected doCreatePolyline(
-        definition: PolylineDefinition<google.maps.PolylineOptions, google.maps.InfoWindowOptions>
-    ): google.maps.Polyline {
+    protected doCreatePolyline({
+        definition,
+    }: {
+        definition: PolylineDefinition<google.maps.PolylineOptions, google.maps.InfoWindowOptions>;
+    }): google.maps.Polyline {
         const { '@id': _id, points, title, infoWindow, rawOptions = {} } = definition;
 
         const polyline = new _google.maps.Polyline({
