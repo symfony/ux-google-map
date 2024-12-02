@@ -86,13 +86,13 @@ export default class extends AbstractMapController<
     }
 
     public centerValueChanged(): void {
-        if (this.map && this.centerValue) {
+        if (this.map && this.hasCenterValue && this.centerValue) {
             this.map.setCenter(this.centerValue);
         }
     }
 
     public zoomValueChanged(): void {
-        if (this.map && this.zoomValue) {
+        if (this.map && this.hasZoomValue && this.zoomValue) {
             this.map.setZoom(this.zoomValue);
         }
     }
