@@ -1,5 +1,5 @@
-import { Controller } from '@hotwired/stimulus';
 import { Loader } from '@googlemaps/js-api-loader';
+import { Controller } from '@hotwired/stimulus';
 
 class default_1 extends Controller {
     constructor() {

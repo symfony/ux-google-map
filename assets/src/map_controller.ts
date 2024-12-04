@@ -7,16 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import AbstractMapController from '@symfony/ux-map';
-import type {
-    Point,
-    MarkerDefinition,
-    PolygonDefinition,
-    PolylineDefinition,
-    InfoWindowWithoutPositionDefinition,
-} from '@symfony/ux-map';
 import type { LoaderOptions } from '@googlemaps/js-api-loader';
 import { Loader } from '@googlemaps/js-api-loader';
+import AbstractMapController from '@symfony/ux-map';
+import type {
+    InfoWindowWithoutPositionDefinition,
+    MarkerDefinition,
+    Point,
+    PolygonDefinition,
+    PolylineDefinition,
+} from '@symfony/ux-map';
 
 type MapOptions = Pick<
     google.maps.MapOptions,
