@@ -113,6 +113,9 @@ class map_controller extends default_1 {
             libraries = ['core', ...libraries.filter((library) => library !== 'core')];
             const librariesImplementations = await Promise.all(libraries.map((library) => loader.importLibrary(library)));
             librariesImplementations.map((libraryImplementation, index) => {
+                if (typeof libraryImplementation !== 'object' || libraryImplementation === null) {
+                    return;
+                }
                 const library = libraries[index];
                 if (['marker', 'places', 'geometry', 'journeySharing', 'drawing', 'visualization'].includes(library)) {
                     _google.maps[library] = libraryImplementation;

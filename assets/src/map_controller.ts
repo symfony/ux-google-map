@@ -71,11 +71,16 @@ export default class extends AbstractMapController<
                 libraries.map((library) => loader.importLibrary(library))
             );
             librariesImplementations.map((libraryImplementation, index) => {
+                if (typeof libraryImplementation !== 'object' || libraryImplementation === null) {
+                    return;
+                }
+
                 const library = libraries[index];
 
                 // The following libraries are in a sub-namespace
                 if (['marker', 'places', 'geometry', 'journeySharing', 'drawing', 'visualization'].includes(library)) {
-                    _google.maps[library] = libraryImplementation;
+                    // @ts-ignore
+                    _google.maps[library] = libraryImplementation as any;
                 } else {
                     _google.maps = { ..._google.maps, ...libraryImplementation };
                 }
