@@ -40,6 +40,7 @@
     "devDependencies": {
         "@googlemaps/js-api-loader": "^1.16.6",
         "@hotwired/stimulus": "^3.0.0",
+        "@symfony/ux-map": "workspace:*",
         "@types/google.maps": "^3.55.9"
     }
 }
