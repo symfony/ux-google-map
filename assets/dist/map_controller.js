@@ -126,6 +126,7 @@ class map_controller extends default_1 {
             });
         }
         super.connect();
+        this.parser = new DOMParser();
     }
     centerValueChanged() {
         if (this.map && this.hasCenterValue && this.centerValue) {
@@ -158,7 +159,7 @@ class map_controller extends default_1 {
         });
     }
     doCreateMarker({ definition, }) {
-        const { '@id': _id, position, title, infoWindow, extra, rawOptions = {}, ...otherOptions } = definition;
+        const { '@id': _id, position, title, infoWindow, icon, extra, rawOptions = {}, ...otherOptions } = definition;
         const marker = new _google.maps.marker.AdvancedMarkerElement({
             position,
             title,
@@ -168,6 +169,9 @@ class map_controller extends default_1 {
         });
         if (infoWindow) {
             this.createInfoWindow({ definition: infoWindow, element: marker });
+        }
+        if (icon) {
+            this.doCreateIcon({ definition: icon, element: marker });
         }
         return marker;
     }
@@ -271,6 +275,20 @@ class map_controller extends default_1 {
             return div;
         }
         return content;
+    }
+    doCreateIcon({ definition, element, }) {
+        const { content, type, width, height } = definition;
+        if (type === 'inline-svg') {
+            const icon = this.parser.parseFromString(content, 'image/svg+xml').documentElement;
+            element.content = icon;
+        }
+        else {
+            const icon = document.createElement('img');
+            icon.width = width;
+            icon.height = height;
+            icon.src = content;
+            element.content = icon;
+        }
     }
     closeInfoWindowsExcept(infoWindow) {
         this.infoWindows.forEach((otherInfoWindow) => {

@@ -13,6 +13,7 @@ namespace Symfony\UX\Map\Bridge\Google\Renderer;
 
 use Symfony\UX\Map\Exception\InvalidArgumentException;
 use Symfony\UX\Map\Exception\UnsupportedSchemeException;
+use Symfony\UX\Map\Icon\UxIconRenderer;
 use Symfony\UX\Map\Renderer\AbstractRendererFactory;
 use Symfony\UX\Map\Renderer\Dsn;
 use Symfony\UX\Map\Renderer\RendererFactoryInterface;
@@ -26,9 +27,10 @@ final class GoogleRendererFactory extends AbstractRendererFactory implements Ren
 {
     public function __construct(
         StimulusHelper $stimulus,
+        ?UxIconRenderer $uxIconRenderer = null,
         private ?string $defaultMapId = null,
     ) {
-        parent::__construct($stimulus);
+        parent::__construct($stimulus, $uxIconRenderer);
     }
 
     public function create(Dsn $dsn): RendererInterface
@@ -51,6 +53,7 @@ final class GoogleRendererFactory extends AbstractRendererFactory implements Ren
             version: $dsn->getOption('version', 'weekly'),
             libraries: ['maps', 'marker', ...$dsn->getOption('libraries', [])],
             defaultMapId: $this->defaultMapId,
+            uxIconRenderer: $this->uxIconRenderer,
         );
     }
 
