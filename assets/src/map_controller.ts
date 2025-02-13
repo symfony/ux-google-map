@@ -11,6 +11,7 @@ import type { LoaderOptions } from '@googlemaps/js-api-loader';
 import { Loader } from '@googlemaps/js-api-loader';
 import AbstractMapController from '@symfony/ux-map';
 import type {
+    Icon,
     InfoWindowWithoutPositionDefinition,
     MarkerDefinition,
     Point,
@@ -55,6 +56,8 @@ export default class extends AbstractMapController<
 
     declare map: google.maps.Map;
 
+    public parser: DOMParser;
+
     async connect() {
         if (!_google) {
             _google = { maps: {} as typeof google.maps };
@@ -88,6 +91,7 @@ export default class extends AbstractMapController<
         }
 
         super.connect();
+        this.parser = new DOMParser();
     }
 
     public centerValueChanged(): void {
@@ -139,7 +143,7 @@ export default class extends AbstractMapController<
     }: {
         definition: MarkerDefinition<google.maps.marker.AdvancedMarkerElementOptions, google.maps.InfoWindowOptions>;
     }): google.maps.marker.AdvancedMarkerElement {
-        const { '@id': _id, position, title, infoWindow, extra, rawOptions = {}, ...otherOptions } = definition;
+        const { '@id': _id, position, title, infoWindow, icon, extra, rawOptions = {}, ...otherOptions } = definition;
 
         const marker = new _google.maps.marker.AdvancedMarkerElement({
             position,
@@ -151,6 +155,10 @@ export default class extends AbstractMapController<
 
         if (infoWindow) {
             this.createInfoWindow({ definition: infoWindow, element: marker });
+        }
+
+        if (icon) {
+            this.doCreateIcon({ definition: icon, element: marker });
         }
 
         return marker;
@@ -295,6 +303,26 @@ export default class extends AbstractMapController<
         }
 
         return content;
+    }
+
+    protected doCreateIcon({
+        definition,
+        element,
+    }: {
+        definition: Icon;
+        element: google.maps.marker.AdvancedMarkerElement;
+    }): void {
+        const { content, type, width, height } = definition;
+        if (type === 'inline-svg') {
+            const icon = this.parser.parseFromString(content, 'image/svg+xml').documentElement;
+            element.content = icon;
+        } else {
+            const icon = document.createElement('img');
+            icon.width = width;
+            icon.height = height;
+            icon.src = content;
+            element.content = icon;
+        }
     }
 
     private closeInfoWindowsExcept(infoWindow: google.maps.InfoWindow) {
