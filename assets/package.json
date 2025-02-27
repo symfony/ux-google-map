@@ -9,7 +9,7 @@
         "map"
     ],
     "homepage": "https://ux.symfony.com/map",
-    "repository": "https://github.com/symfony/ux-google-map/tree/2.x",
+    "repository": "https://github.com/symfony/ux-google-map",
     "type": "module",
     "files": [
         "dist"
