@@ -9,7 +9,7 @@
 
 import type { LoaderOptions } from '@googlemaps/js-api-loader';
 import { Loader } from '@googlemaps/js-api-loader';
-import AbstractMapController from '@symfony/ux-map';
+import AbstractMapController, { IconTypes } from '@symfony/ux-map';
 import type {
     Icon,
     InfoWindowWithoutPositionDefinition,
@@ -313,7 +313,7 @@ export default class extends AbstractMapController<
         element: google.maps.marker.AdvancedMarkerElement;
     }): void {
         const { content, type, width, height } = definition;
-        if (type === 'inline-svg') {
+        if (type === IconTypes.InlineSvg) {
             const icon = this.parser.parseFromString(content, 'image/svg+xml').documentElement;
             element.content = icon;
         } else {
