@@ -1,6 +1,11 @@
 import { Loader } from '@googlemaps/js-api-loader';
 import { Controller } from '@hotwired/stimulus';
 
+const IconTypes = {
+    Url: 'url',
+    InlineSvg: 'inline-svg',
+    UxIcon: 'ux-icon',
+};
 class default_1 extends Controller {
     constructor() {
         super(...arguments);
@@ -278,7 +283,7 @@ class map_controller extends default_1 {
     }
     doCreateIcon({ definition, element, }) {
         const { content, type, width, height } = definition;
-        if (type === 'inline-svg') {
+        if (type === IconTypes.InlineSvg) {
             const icon = this.parser.parseFromString(content, 'image/svg+xml').documentElement;
             element.content = icon;
         }
