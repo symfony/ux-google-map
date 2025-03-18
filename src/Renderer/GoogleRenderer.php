@@ -29,6 +29,7 @@ final readonly class GoogleRenderer extends AbstractRenderer
      */
     public function __construct(
         StimulusHelper $stimulusHelper,
+        UxIconRenderer $uxIconRenderer,
         #[\SensitiveParameter]
         private string $apiKey,
         private ?string $id = null,
@@ -43,7 +44,6 @@ final readonly class GoogleRenderer extends AbstractRenderer
          */
         private array $libraries = [],
         private ?string $defaultMapId = null,
-        ?UxIconRenderer $uxIconRenderer = null,
     ) {
         parent::__construct($stimulusHelper, $uxIconRenderer);
     }
