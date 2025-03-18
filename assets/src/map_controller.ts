@@ -37,6 +37,8 @@ type MapOptions = Pick<
 
 let _google: typeof google;
 
+const parser = new DOMParser();
+
 export default class extends AbstractMapController<
     MapOptions,
     google.maps.Map,
@@ -312,16 +314,20 @@ export default class extends AbstractMapController<
         definition: Icon;
         element: google.maps.marker.AdvancedMarkerElement;
     }): void {
-        const { content, type, width, height } = definition;
-        if (type === IconTypes.InlineSvg) {
-            const icon = this.parser.parseFromString(content, 'image/svg+xml').documentElement;
-            element.content = icon;
-        } else {
+        const { type, width, height } = definition;
+
+        if (type === IconTypes.Svg) {
+            element.content = parser.parseFromString(definition.html, 'image/svg+xml').documentElement;
+        } else if (type === IconTypes.UxIcon) {
+            element.content = parser.parseFromString(definition._generated_html, 'image/svg+xml').documentElement;
+        } else if (type === IconTypes.Url) {
             const icon = document.createElement('img');
             icon.width = width;
             icon.height = height;
-            icon.src = content;
+            icon.src = definition.url;
             element.content = icon;
+        } else {
+            throw new Error(`Unsupported icon type: ${type}.`);
         }
     }
 

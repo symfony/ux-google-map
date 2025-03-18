@@ -3,7 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 
 const IconTypes = {
     Url: 'url',
-    InlineSvg: 'inline-svg',
+    Svg: 'svg',
     UxIcon: 'ux-icon',
 };
 class default_1 extends Controller {
@@ -109,6 +109,7 @@ default_1.values = {
 };
 
 let _google;
+const parser = new DOMParser();
 class map_controller extends default_1 {
     async connect() {
         if (!_google) {
@@ -282,17 +283,22 @@ class map_controller extends default_1 {
         return content;
     }
     doCreateIcon({ definition, element, }) {
-        const { content, type, width, height } = definition;
-        if (type === IconTypes.InlineSvg) {
-            const icon = this.parser.parseFromString(content, 'image/svg+xml').documentElement;
-            element.content = icon;
+        const { type, width, height } = definition;
+        if (type === IconTypes.Svg) {
+            element.content = parser.parseFromString(definition.html, 'image/svg+xml').documentElement;
         }
-        else {
+        else if (type === IconTypes.UxIcon) {
+            element.content = parser.parseFromString(definition._generated_html, 'image/svg+xml').documentElement;
+        }
+        else if (type === IconTypes.Url) {
             const icon = document.createElement('img');
             icon.width = width;
             icon.height = height;
-            icon.src = content;
+            icon.src = definition.url;
             element.content = icon;
+        }
+        else {
+            throw new Error(`Unsupported icon type: ${type}.`);
         }
     }
     closeInfoWindowsExcept(infoWindow) {
