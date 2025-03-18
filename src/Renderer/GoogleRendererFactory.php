@@ -27,7 +27,7 @@ final class GoogleRendererFactory extends AbstractRendererFactory implements Ren
 {
     public function __construct(
         StimulusHelper $stimulus,
-        ?UxIconRenderer $uxIconRenderer = null,
+        UxIconRenderer $uxIconRenderer,
         private ?string $defaultMapId = null,
     ) {
         parent::__construct($stimulus, $uxIconRenderer);
@@ -43,7 +43,8 @@ final class GoogleRendererFactory extends AbstractRendererFactory implements Ren
 
         return new GoogleRenderer(
             $this->stimulus,
-            $apiKey,
+            $this->uxIconRenderer,
+            apiKey: $apiKey,
             id: $dsn->getOption('id'),
             language: $dsn->getOption('language'),
             region: $dsn->getOption('region'),
@@ -53,7 +54,6 @@ final class GoogleRendererFactory extends AbstractRendererFactory implements Ren
             version: $dsn->getOption('version', 'weekly'),
             libraries: ['maps', 'marker', ...$dsn->getOption('libraries', [])],
             defaultMapId: $this->defaultMapId,
-            uxIconRenderer: $this->uxIconRenderer,
         );
     }
 
